@@ -1,0 +1,31 @@
+services:
+  backend:
+    image: backend_imageops:latest
+    container_name: backend-devops01
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_DEBUG: ${DJANGO_DEBUG}
+      ALLOWED_HOSTS: "*"
+    networks:
+      - devops_network01
+
+
+  frontend:
+    image: frontend_imageops:latest
+    container_name: frontend-devops01
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
+    depends_on:
+      - backend
+    networks:
+      - devops_network01
+
+networks:
+  devops_network01:
+    external: true 
+
+
+
