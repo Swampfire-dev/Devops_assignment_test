@@ -8,7 +8,6 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,4 +28,16 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/image_frontend:latest ./frontend
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/image_frontend:latest
 
+
+  deploy:
+    needs: build-and-push
+    runs-on: self-hosted
+    steps:
+      - name: Deploy on VM
+        run: |
+          cd /opt/devops/devops-assessment
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/image_backend:latest
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/image_frontend:latest
+          docker compose down
+          docker compose up -d
 
